@@ -1,0 +1,32 @@
+# React / Vue.js / Node.js
+node_modules/
+dist/
+build/
+coverage/
+.vite/
+.next/
+.nuxt/
+.output/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Tailwind CSS
+# Compiled CSS and build artifacts are covered by dist/ and build/ above.
+
+# Fetch API
+# Browser-native API; it does not generate files to ignore.
+
+# VS Code
+.vscode/*
+!.vscode/extensions.json
+
+# Python virtual environments
+.venv/
+venv/
+env/
+ENV/
+__pycache__/
+*.py[cod]
+*.egg-info/
