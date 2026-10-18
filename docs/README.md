@@ -1,117 +1,106 @@
 # Dashboard de Monitoramento de Clima
 
-MVP planejado de um dashboard web responsivo para pesquisar cidades e visualizar condições meteorológicas. A interface será construída em React e Tailwind CSS e consultará uma API externa de clima.
+MVP web responsivo para pesquisar cidades e acompanhar condições meteorológicas atuais e previsão para os próximos dias. A interface foi implementada em React e Tailwind CSS e consome os serviços públicos do Open-Meteo.
 
-## Status do Projeto
+## Funcionalidades
 
-O repositório está na etapa de planejamento e configuração. A interface, a integração com a API e os testes automatizados ainda não foram implementados. Por isso, os comandos de execução descritos abaixo são o fluxo pretendido e a aplicação ainda não pode ser iniciada.
-
-## Funcionalidades Planejadas
-
-- Pesquisar uma cidade pelo nome;
-- Exibir temperatura em °C, umidade, sensação térmica, ícone e descrição do clima;
-- Apresentar previsão de curto prazo;
-- Informar quando uma cidade não for encontrada ou a API estiver indisponível;
-- Adaptar a interface para desktop e dispositivos móveis.
-
-Autenticação, histórico persistido, banco de dados e outros serviços além da API de clima não fazem parte do MVP atual.
+- Consulta inicial de Curitiba e busca de outras cidades;
+- Temperatura atual, sensação térmica, umidade, vento e chance de chuva;
+- Previsão diária para cinco dias, com máximas e mínimas;
+- Estados de carregamento, cidade não encontrada e falha de conexão;
+- Layout responsivo para desktop e dispositivos móveis.
 
 ## Tecnologias e Ferramentas
 
 - React 19.3.1 e React DOM 19.3.1;
-- Tailwind CSS 4.3.3;
+- Tailwind CSS 4.3.3 e CSS para estilos específicos dos componentes;
 - Vite 8.3.4 para desenvolvimento e build;
-- Axios 1.20.0 como cliente HTTP instalado. O Fetch API também é uma alternativa nativa do navegador e não requer dependência adicional;
-- API de clima: OpenWeatherMap é uma opção considerada, mas ainda não configurada;
-- Assistente de código: GitHub Copilot;
-- Modelo de IA utilizado: ainda não registrado para este projeto. Registrar o nome do modelo e a atividade correspondente quando forem definidos.
-- Testes: framework e bibliotecas ainda não configurados.
+- Axios 1.20.0 para requisições HTTP;
+- Lucide React 1.59.0 para ícones;
+- Vitest 5.0.5, Testing Library e jsdom para testes;
+- Open-Meteo para geocodificação e previsão, sem chave de API;
+- GitHub Copilot como assistente de código. A aplicação não integra LLMs; nenhum modelo de IA participa das requisições ou da lógica meteorológica.
 
-As versões das dependências diretas estão declaradas em [`../package.json`](../package.json).
+As versões exatas e dependências transitivas estão registradas em [`../package.json`](../package.json) e [`../package-lock.json`](../package-lock.json).
 
 ## Configuração e Execução Local
 
 ### Pré-requisitos
 
-- Git;
-- Node.js compatível com Vite 8 (Node.js 20.19+ ou 22.12+);
-- npm, incluído na instalação do Node.js.
+- Node.js 20.19+ ou 22.12+;
+- npm;
+- Acesso à internet para consultar os serviços Open-Meteo.
 
-### Instalação
+### Instalar dependências
 
-Na raiz do repositório, execute:
+Na raiz do repositório:
 
 ```bash
-npm install
+npm ci
 ```
 
-### Iniciar em desenvolvimento
+### Executar em desenvolvimento
 
 ```bash
 npm run dev
 ```
 
-O script Vite está declarado, mas a inicialização depende da implementação do ponto de entrada da aplicação (`index.html` e código em `src/`), que ainda não existe. Portanto, este comando não é executável com o estado atual do repositório.
+Abra a URL mostrada pelo Vite, normalmente `http://localhost:5173`.
 
-Quando a aplicação for implementada, uma chave de API poderá ser configurada localmente em `.env.local`, por exemplo:
-
-```env
-VITE_WEATHER_API_KEY=sua_chave
-```
-
-Não versione chaves reais. Variáveis com prefixo `VITE_` são incorporadas ao frontend e ficam visíveis no navegador; não use esse mecanismo para segredos que precisem permanecer privados.
-
-### Build de produção
-
-O script planejado é:
+### Gerar build de produção
 
 ```bash
 npm run build
+npm run preview
 ```
 
-Ele também depende da criação do ponto de entrada e dos arquivos da aplicação.
+## Uso e Integração
 
-## Como Interagir
+Digite uma cidade no campo de busca e pressione **Buscar** ou Enter. A tela apresenta os dados atuais e a previsão. A busca inicial é Curitiba; uma falha posterior mantém os dados anteriores e informa o erro.
 
-Ainda não há uma interface ou API implementada para uso real. O fluxo esperado para o MVP é:
+O serviço em `src/services/weatherApi.js` consulta:
 
-1. Digitar o nome de uma cidade, por exemplo, `Curitiba`;
-2. Solicitar a consulta;
-3. Visualizar as condições atuais e a previsão disponíveis;
-4. Receber uma mensagem clara caso a cidade não seja encontrada ou a consulta falhe.
+- `https://geocoding-api.open-meteo.com/v1/search` para obter nome, região e coordenadas da cidade;
+- `https://api.open-meteo.com/v1/forecast` para temperatura, umidade, sensação térmica, vento, código meteorológico e previsão diária.
 
-## Arquitetura Prevista
+Os resultados são normalizados para os objetos `location`, `current` e `daily` antes de chegar aos componentes React. A aplicação não precisa de `.env` ou chave secreta.
 
-O escopo atual prevê uma aplicação frontend que consulta diretamente o serviço meteorológico. Backend, PostgreSQL e persistência não fazem parte desta versão.
+## Arquitetura
 
 ```mermaid
 graph LR
-    User[Usuário] --> UI[Interface React]
+    User[Usuário] --> UI[React UI]
     UI --> Search[Busca por cidade]
-    Search --> Http[Fetch API ou Axios]
-    Http --> Weather[API externa de clima]
-    Weather --> Http
-    Http --> UI
+    Search --> Client[Axios]
+    Client --> Geo[Open-Meteo Geocoding]
+    Geo --> Client
+    Client --> Forecast[Open-Meteo Forecast]
+    Forecast --> Client
+    Client --> UI
 ```
 
 ## Testes Automatizados
 
-Ainda não há testes, framework de testes ou script `test` no `package.json`. Assim, não existe um comando de teste executável nem resultados de aprovação a relatar neste estágio. Antes da entrega do MVP, devem ser adicionados testes unitários e de integração para busca, estados de carregamento, renderização dos dados e erros da API, além de um comando de teste documentado e validado.
+Execute os testes com:
+
+```bash
+npm test
+```
+
+Os testes cobrem a normalização da resposta meteorológica, cidade não encontrada, falha de rede, renderização inicial, busca por cidade e apresentação de erros. O script `npm run test:watch` inicia o Vitest em modo interativo.
 
 ## Limitações e Próximos Passos
 
-- Criar o ponto de entrada e os componentes React;
-- Escolher e integrar uma API meteorológica, incluindo o tratamento seguro da chave;
-- Implementar busca, previsão, estados de carregamento e mensagens de erro;
-- Configurar testes automatizados e verificar build e testes em ambiente limpo;
-- Gerar e versionar o lockfile npm para fixar também as dependências transitivas;
-- Revisar acessibilidade e comportamento responsivo;
-- Definir créditos finais e uma licença para o projeto.
+- O MVP é somente frontend e depende da disponibilidade e limites de uso dos serviços públicos Open-Meteo;
+- A busca usa o primeiro resultado de geocodificação; cidades homônimas ainda não oferecem seleção de região;
+- Não há favoritos, histórico, backend, persistência nem integração com LLM;
+- A suíte cobre serviço e componentes, mas ainda não possui testes E2E em navegador;
+- Créditos de autoria e licença do projeto precisam ser definidos antes de uma distribuição formal.
 
 ## Créditos e Licença
 
-OpenWeatherMap é uma API candidata, ainda não integrada. Os créditos de autoria e a licença do repositório ainda não foram definidos; não reutilize ou redistribua o projeto sob uma licença presumida.
+Dados meteorológicos por [Open-Meteo](https://open-meteo.com/); geocodificação baseada em [OpenStreetMap](https://www.openstreetmap.org/copyright). A licença do código ainda não foi definida.
 
 ## Releases e Tags
 
-Ainda não há release ou tag publicada. Após implementar o MVP, executar e aprovar os testes e revisar a documentação, recomenda-se criar uma release e uma tag versionada, por exemplo `v1.0.0`.
+Ainda não há release ou tag publicada. Recomenda-se criar uma tag versionada, como `v1.0.0`, após a revisão final do MVP e da licença.
