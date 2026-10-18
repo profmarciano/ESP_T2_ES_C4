@@ -12,6 +12,11 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# Local secrets
+.env
+.env.*
+!.env.example
+
 # Tailwind CSS
 # Compiled CSS and build artifacts are covered by dist/ and build/ above.
 

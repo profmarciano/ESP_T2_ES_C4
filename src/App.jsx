@@ -13,11 +13,14 @@ import {
   MapPin,
   Moon,
   Search,
+  Send,
+  Sparkles,
   Sun,
   Thermometer,
   Wind,
 } from "lucide-react";
 import { formatDate, formatForecastDay, getWeatherCondition } from "./lib/weather.js";
+import { getWeatherAdvice } from "./services/adviceApi.js";
 import { getWeatherByCity } from "./services/weatherApi.js";
 
 const weatherIcons = {
@@ -43,6 +46,10 @@ function App() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [assistantQuestion, setAssistantQuestion] = useState("");
+  const [assistantAnswer, setAssistantAnswer] = useState(null);
+  const [assistantLoading, setAssistantLoading] = useState(false);
+  const [assistantError, setAssistantError] = useState("");
 
   useEffect(() => {
     const controller = new AbortController();
@@ -69,11 +76,32 @@ function App() {
 
     try {
       setWeather(await getWeatherByCity(city));
+      setAssistantAnswer(null);
+      setAssistantError("");
       setSearch("");
     } catch (requestError) {
       setError(requestError.message);
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleAssistantSubmit(event) {
+    event.preventDefault();
+    const question = assistantQuestion.trim();
+    if (!question || !weather || assistantLoading) return;
+
+    setAssistantLoading(true);
+    setAssistantError("");
+    setAssistantAnswer(null);
+
+    try {
+      setAssistantAnswer(await getWeatherAdvice(question, weather));
+      setAssistantQuestion("");
+    } catch (requestError) {
+      setAssistantError(requestError.message);
+    } finally {
+      setAssistantLoading(false);
     }
   }
 
@@ -182,6 +210,66 @@ function App() {
                     <div><p>Chance de chuva</p><strong>{today?.precipitationProbability ?? 0}<small>%</small></strong></div>
                   </article>
                 </div>
+              </section>
+
+              <section className="assistant-section" aria-labelledby="assistant-heading">
+                <div className="section-heading assistant-heading">
+                  <div>
+                    <p className="overline">PLANEJE COM MAIS CONTEXTO</p>
+                    <h2 id="assistant-heading">Assistente do dia</h2>
+                  </div>
+                  <span className="assistant-mark"><Sparkles size={18} aria-hidden="true" /></span>
+                </div>
+                <p className="assistant-description">
+                  Pergunte sobre seus planos. A resposta considera a previsão de {weather.location.name}.
+                </p>
+                <p className="assistant-privacy">
+                  Sua pergunta e os dados de previsão são enviados ao Gemini para gerar a recomendação.
+                </p>
+                <form className="assistant-form" onSubmit={handleAssistantSubmit}>
+                  <label className="sr-only" htmlFor="assistant-question">Sua pergunta sobre o clima</label>
+                  <textarea
+                    id="assistant-question"
+                    maxLength={280}
+                    onChange={(event) => setAssistantQuestion(event.target.value)}
+                    placeholder="Ex.: Preciso levar guarda-chuva?"
+                    rows={2}
+                    value={assistantQuestion}
+                  />
+                  <button disabled={assistantLoading || !assistantQuestion.trim()} type="submit">
+                    {assistantLoading ? <span className="loading-spinner assistant-spinner" /> : <Send size={16} aria-hidden="true" />}
+                    <span>{assistantLoading ? "Analisando" : "Perguntar"}</span>
+                  </button>
+                </form>
+                <div className="assistant-suggestions" aria-label="Sugestões de perguntas">
+                  {[
+                    "Preciso levar guarda-chuva?",
+                    "É um bom dia para caminhar?",
+                    "O que considerar para sair?",
+                  ].map((suggestion) => (
+                    <button
+                      key={suggestion}
+                      onClick={() => setAssistantQuestion(suggestion)}
+                      type="button"
+                    >
+                      {suggestion}
+                    </button>
+                  ))}
+                </div>
+                {assistantError && <p className="assistant-error" role="alert">{assistantError}</p>}
+                {assistantAnswer && (
+                  <article className={`assistant-answer answer-${assistantAnswer.recommendation}`} aria-live="polite">
+                    <div className="answer-title-row">
+                      <span className="answer-indicator" />
+                      <h3>{assistantAnswer.title}</h3>
+                    </div>
+                    <p>{assistantAnswer.summary}</p>
+                    <ul>
+                      {assistantAnswer.reasons.map((reason, index) => <li key={`${index}-${reason}`}>{reason}</li>)}
+                    </ul>
+                    <span className="answer-source">Recomendação baseada nos dados meteorológicos disponíveis</span>
+                  </article>
+                )}
               </section>
             </section>
 

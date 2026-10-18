@@ -1,7 +1,12 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import App from "./App.jsx";
+import { getWeatherAdvice } from "./services/adviceApi.js";
 import { getWeatherByCity } from "./services/weatherApi.js";
+
+vi.mock("./services/adviceApi.js", () => ({
+  getWeatherAdvice: vi.fn(),
+}));
 
 vi.mock("./services/weatherApi.js", () => ({
   getWeatherByCity: vi.fn(),
@@ -32,8 +37,16 @@ const curitibaWeather = {
   ],
 };
 
+const weatherAdvice = {
+  title: "Leve um guarda-chuva",
+  recommendation: "com_cautela",
+  summary: "A previsão indica possibilidade de chuva em Curitiba.",
+  reasons: ["Chance de chuva de 15% hoje."],
+};
+
 describe("weather dashboard", () => {
   beforeEach(() => {
+    getWeatherAdvice.mockReset();
     getWeatherByCity.mockReset();
     getWeatherByCity.mockResolvedValue(curitibaWeather);
   });
@@ -78,5 +91,36 @@ describe("weather dashboard", () => {
 
     expect(await screen.findByRole("alert")).toHaveTextContent("Cidade não encontrada.");
     await waitFor(() => expect(screen.getByRole("heading", { name: "Curitiba" })).toBeInTheDocument());
+  });
+
+  it("sends the user's question and current forecast to the assistant", async () => {
+    getWeatherAdvice.mockResolvedValueOnce(weatherAdvice);
+    render(<App />);
+
+    await screen.findByRole("heading", { name: "Curitiba" });
+    fireEvent.change(screen.getByRole("textbox", { name: "Sua pergunta sobre o clima" }), {
+      target: { value: "Preciso levar guarda-chuva?" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Perguntar" }));
+
+    expect(await screen.findByRole("heading", { name: "Leve um guarda-chuva" })).toBeInTheDocument();
+    expect(screen.getByText("Chance de chuva de 15% hoje.")).toBeInTheDocument();
+    expect(getWeatherAdvice).toHaveBeenCalledWith("Preciso levar guarda-chuva?", curitibaWeather);
+  });
+
+  it("shows setup errors without hiding the weather dashboard", async () => {
+    getWeatherAdvice.mockRejectedValueOnce(
+      new Error("Assistente indisponível: configure GEMINI_API_KEY no backend."),
+    );
+    render(<App />);
+
+    await screen.findByRole("heading", { name: "Curitiba" });
+    fireEvent.change(screen.getByRole("textbox", { name: "Sua pergunta sobre o clima" }), {
+      target: { value: "Posso caminhar hoje?" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Perguntar" }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent("configure GEMINI_API_KEY");
+    expect(screen.getByRole("heading", { name: "Curitiba" })).toBeInTheDocument();
   });
 });

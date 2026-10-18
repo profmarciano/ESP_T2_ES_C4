@@ -191,6 +191,38 @@ a { color: inherit; }
 .forecast-note p { margin: 0; color: #607974; font-size: 11px; line-height: 1.5; }
 .forecast-note strong { color: #285e56; }
 
+.assistant-section { margin-top: 2px; padding-top: 22px; border-top: 1px solid var(--line); }
+.assistant-heading { align-items: center; }
+.assistant-mark { display: grid; width: 36px; height: 36px; place-items: center; border: 1px solid #e8dfbd; border-radius: 7px; background: #f8f2dd; color: #9b7836; }
+.assistant-description { margin: 9px 0 13px; color: #71847d; font-size: 12px; line-height: 1.55; }
+.assistant-privacy { margin: -5px 0 12px; color: #84958e; font-size: 10px; line-height: 1.5; }
+.assistant-form { display: flex; align-items: stretch; gap: 8px; }
+.assistant-form textarea { width: 100%; min-height: 60px; max-height: 120px; resize: vertical; padding: 11px 12px; border: 1px solid #dce7df; border-radius: 7px; outline: 0; background: rgba(255, 255, 255, 0.82); color: var(--ink); font-size: 13px; line-height: 1.45; }
+.assistant-form textarea:focus { border-color: #69a79a; box-shadow: 0 0 0 3px rgba(71, 145, 128, 0.12); }
+.assistant-form textarea::placeholder { color: #8b9d98; }
+.assistant-form button { display: inline-flex; min-width: 112px; align-items: center; justify-content: center; gap: 7px; padding: 0 13px; border: 0; border-radius: 7px; background: #1d706a; color: white; cursor: pointer; font-size: 12px; font-weight: 650; transition: background 160ms ease; }
+.assistant-form button:hover:not(:disabled) { background: #135c57; }
+.assistant-form button:disabled { cursor: not-allowed; opacity: 0.55; }
+.assistant-spinner { width: 15px; height: 15px; border-width: 2px; border-color: rgba(255, 255, 255, 0.4); border-top-color: white; }
+.assistant-suggestions { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
+.assistant-suggestions button { padding: 6px 9px; border: 1px solid #e1e9e3; border-radius: 6px; background: rgba(255, 255, 255, 0.6); color: #607972; cursor: pointer; font-size: 10px; transition: border-color 150ms ease, background 150ms ease; }
+.assistant-suggestions button:hover { border-color: #a6c9b9; background: #f3f8f2; }
+.assistant-answer { margin-top: 14px; padding: 14px 15px; border: 1px solid #d9e8dc; border-radius: 7px; background: #f4f8f2; }
+.answer-com_cautela { border-color: #eadfbe; background: #fbf8ed; }
+.answer-evitar { border-color: #efcfc3; background: #fff5f0; }
+.answer-title-row { display: flex; align-items: center; gap: 8px; }
+.answer-indicator { width: 8px; height: 8px; flex: 0 0 auto; border-radius: 50%; background: #4c9773; }
+.answer-com_cautela .answer-indicator { background: #c3943c; }
+.answer-evitar .answer-indicator { background: #cf6b4f; }
+.answer-title-row h3 { margin: 0; color: #285e56; font-size: 13px; font-weight: 700; }
+.answer-com_cautela .answer-title-row h3 { color: #80642d; }
+.answer-evitar .answer-title-row h3 { color: #8d4d3b; }
+.assistant-answer > p { margin: 8px 0; color: #4e6861; font-size: 12px; line-height: 1.55; }
+.assistant-answer ul { display: grid; gap: 4px; margin: 0; padding-left: 17px; color: #6a8078; font-size: 11px; line-height: 1.5; }
+.answer-source { display: block; margin-top: 10px; color: #84958e; font-size: 9px; }
+.assistant-error { margin: 10px 0 0; color: #a3533d; font-size: 12px; line-height: 1.5; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; clip-path: inset(50%); }
+
 .error-banner { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 15px; padding: 12px 15px; border: 1px solid #edc3b5; border-radius: 7px; background: #fff0e9; color: #8f4934; font-size: 13px; }
 .error-banner button { width: 27px; height: 27px; border: 0; border-radius: 5px; background: transparent; color: inherit; cursor: pointer; font-size: 20px; line-height: 1; }
 .error-banner button:hover { background: rgba(143, 73, 52, 0.08); }
@@ -236,6 +268,8 @@ a { color: inherit; }
   .detail-icon { width: 32px; height: 32px; }
   .detail-item p { font-size: 10px; }
   .detail-item strong { font-size: 17px; }
+  .assistant-form { flex-direction: column; }
+  .assistant-form button { min-height: 39px; align-self: flex-end; }
   .forecast-panel { padding: 20px 16px 16px; }
   .forecast-day { grid-template-columns: 43px 28px minmax(60px, 1fr) auto; gap: 5px; }
   .forecast-condition { font-size: 10px; }
