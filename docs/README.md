@@ -1,154 +1,117 @@
 # Dashboard de Monitoramento de Clima
 
-## Visão Geral
+MVP planejado de um dashboard web responsivo para pesquisar cidades e visualizar condições meteorológicas. A interface será construída em React e Tailwind CSS e consultará uma API externa de clima.
 
-Este miniprojeto tem como objetivo desenvolver um Produto Mínimo Viável (MVP) de um dashboard de monitoramento de clima, utilizando uma interface web em React e consumindo dados de uma API externa de meteorologia, como a OpenWeatherMap.
+## Status do Projeto
 
-A ideia central é demonstrar como a inteligência artificial pode apoiar as fases de planejamento, geração de código, testes, documentação e refinamento visual em um projeto de software pequeno, mas relevante e demonstrável.
+O repositório está na etapa de planejamento e configuração. A interface, a integração com a API e os testes automatizados ainda não foram implementados. Por isso, os comandos de execução descritos abaixo são o fluxo pretendido e a aplicação ainda não pode ser iniciada.
 
-## Objetivo do Projeto
+## Funcionalidades Planejadas
 
-Criar uma aplicação web frontend responsiva que permita:
+- Pesquisar uma cidade pelo nome;
+- Exibir temperatura em °C, umidade, sensação térmica, ícone e descrição do clima;
+- Apresentar previsão de curto prazo;
+- Informar quando uma cidade não for encontrada ou a API estiver indisponível;
+- Adaptar a interface para desktop e dispositivos móveis.
 
-- Buscar cidades por nome;
-- Exibir as condições climáticas atuais;
-- Mostrar informações como temperatura, umidade e sensação térmica;
-- Apresentar uma previsão de curto prazo para a cidade selecionada;
-- Oferecer uma interface simples, legível e visualmente agradável.
+Autenticação, histórico persistido, banco de dados e outros serviços além da API de clima não fazem parte do MVP atual.
 
-## Escopo do MVP
+## Tecnologias e Ferramentas
 
-O projeto deve manter um escopo limitado e focado para viabilizar desenvolvimento e aprendizagem em um período razoável.
+- React 19.3.1 e React DOM 19.3.1;
+- Tailwind CSS 4.3.3;
+- Vite 8.3.4 para desenvolvimento e build;
+- Axios 1.20.0 como cliente HTTP instalado. O Fetch API também é uma alternativa nativa do navegador e não requer dependência adicional;
+- API de clima: OpenWeatherMap é uma opção considerada, mas ainda não configurada;
+- Assistente de código: GitHub Copilot;
+- Modelo de IA utilizado: ainda não registrado para este projeto. Registrar o nome do modelo e a atividade correspondente quando forem definidos.
+- Testes: framework e bibliotecas ainda não configurados.
 
-### Funcionalidades inclusas
+As versões das dependências diretas estão declaradas em [`../package.json`](../package.json).
 
-- Busca por cidade;
-- Card com dados climáticos atuais;
-- Ícones e descrição do clima;
-- Temperatura em °C;
-- Umidade em %;
-- Previsão para os próximos dias;
-- Tratamento de erro para cidade não encontrada ou falha na API;
-- Layout responsivo para desktop e mobile.
+## Configuração e Execução Local
 
-### Funcionalidades fora do escopo
+### Pré-requisitos
 
-- Autenticação de usuários;
-- Persistência de dados em banco;
-- Histórico de buscas salvo no backend;
-- Múltiplos módulos de negócio;
-- Integração com outros serviços externos além da API de clima.
+- Git;
+- Node.js compatível com Vite 8 (Node.js 20.19+ ou 22.12+);
+- npm, incluído na instalação do Node.js.
 
-## Tecnologias
+### Instalação
 
-- Frontend: React
-- Estilização: Tailwind CSS
-- Requisições HTTP: Fetch API ou Axios
-- API externa: OpenWeatherMap (ou equivalente)
-- Testes: React Testing Library + Jest
+Na raiz do repositório, execute:
 
-## Arquitetura do Sistema
-
-O projeto é uma aplicação frontend que comunica diretamente com a API externa de clima. A arquitetura é simples, adequada ao objetivo de explorar o uso da IA em múltiplas etapas.
-
-```mermaid
-graph TD
-    A[Usuário] --> B[Interface React]
-    B --> C[Componentes de UI]
-    C --> D[Busca por cidade]
-    D --> E[Fetch API / Axios]
-    E --> F[OpenWeatherMap API]
-    F --> G[Resposta JSON]
-    G --> H[Renderização de dados no dashboard]
-
-    B --> I[Tailwind CSS]
-    B --> J[Testes de componentes e integração]
+```bash
+npm install
 ```
 
-## Atividades de IA no Laboratório
+### Iniciar em desenvolvimento
 
-Este projeto permite explorar a IA em diversas etapas do desenvolvimento:
-
-- Geração de componentes de interface do usuário;
-- Implementação da lógica de busca e consumo de API;
-- Criação de testes para componentes e requisições;
-- Sugestão de classes e ajustes de layout com Tailwind CSS;
-- Refatoração de código para melhor legibilidade e manutenção;
-- Geração de documentação técnica e instruções de uso.
-
-## Fluxo de Mensagens
-
-```mermaid
-graph TD
-    subgraph Frontend["Frontend - React/Vue.js"]
-        UI["Interface do Usuário"]
-        State["Estado da Aplicação"]
-        Fetch["Fetch API / Axios"]
-    end
-
-    subgraph Backend["Backend - API"]
-        Controller["Controller"]
-        Service["Service"]
-        Repository["Repository"]
-    end
-
-    subgraph Database["Banco de Dados - PostgreSQL"]
-        DB[("PostgreSQL")]
-    end
-
-    UI --> State
-    State --> Fetch
-    Fetch -->|HTTP Request / JSON| Controller
-
-    Controller --> Service
-    Service --> Repository
-    Repository -->|SQL Query| DB
-    DB -->|Dados retornados| Repository
-    Repository -->|Entidades / DTOs| Service
-    Service -->|Resposta processada| Controller
-    Controller -->|JSON Response| Fetch
-    Fetch -->|Dados exibidos| UI
+```bash
+npm run dev
 ```
 
-## Estrutura de Desenvolvimento Sugerida
+O script Vite está declarado, mas a inicialização depende da implementação do ponto de entrada da aplicação (`index.html` e código em `src/`), que ainda não existe. Portanto, este comando não é executável com o estado atual do repositório.
 
-- `src/components`: componentes da interface
-- `src/pages`: telas principais
-- `src/services`: funções de consumo da API
-- `src/hooks`: lógicas reutilizáveis
-- `src/tests`: testes automatizados
-- `src/styles`: estilos globais e configurações do Tailwind
+Quando a aplicação for implementada, uma chave de API poderá ser configurada localmente em `.env.local`, por exemplo:
 
-## Critérios de Aceitação
+```env
+VITE_WEATHER_API_KEY=sua_chave
+```
 
-O MVP será considerado concluído quando:
+Não versione chaves reais. Variáveis com prefixo `VITE_` são incorporadas ao frontend e ficam visíveis no navegador; não use esse mecanismo para segredos que precisem permanecer privados.
 
-- A aplicação consegue buscar clima de pelo menos uma cidade;
-- Os dados principais são exibidos corretamente;
-- A interface responde bem em telas menores;
-- Há tratamento para falhas de requisição;
-- Os testes cobrem os principais fluxos da aplicação;
-- O código está organizado e documentado.
+### Build de produção
 
-## Benefício do Projeto
+O script planejado é:
 
-Este miniprojeto é ideal para o laboratório porque combina:
+```bash
+npm run build
+```
 
-- escopo limitado e claro;
-- relevância prática;
-- uso intenso de genAI em vários estágios da entrega;
-- facilidade de teste;
-- familiaridade tecnológica com React e JavaScript/TypeScript;
-- possibilidade de demonstrar aprendizado em UI, integração e qualidade de software.
+Ele também depende da criação do ponto de entrada e dos arquivos da aplicação.
 
-## Entregáveis Esperados
+## Como Interagir
 
-- Repositório com código funcional;
-- README com instruções de uso;
-- Interface de dashboard com dados de clima;
-- Testes automatizados;
-- Documentação resumida das decisões de implementação e uso da IA.
+Ainda não há uma interface ou API implementada para uso real. O fluxo esperado para o MVP é:
 
-## Conclusão
+1. Digitar o nome de uma cidade, por exemplo, `Curitiba`;
+2. Solicitar a consulta;
+3. Visualizar as condições atuais e a previsão disponíveis;
+4. Receber uma mensagem clara caso a cidade não seja encontrada ou a consulta falhe.
 
-O dashboard de monitoramento de clima é uma escolha adequada para este laboratório porque permite praticar os conceitos fundamentais de desenvolvimento de software com suporte da genAI, sem perder tempo com um projeto excessivamente complexo. Ele oferece um equilíbrio ideal entre simplicidade, aplicabilidade e potencial de experimentação com ferramentas inteligentes de desenvolvimento.
+## Arquitetura Prevista
+
+O escopo atual prevê uma aplicação frontend que consulta diretamente o serviço meteorológico. Backend, PostgreSQL e persistência não fazem parte desta versão.
+
+```mermaid
+graph LR
+    User[Usuário] --> UI[Interface React]
+    UI --> Search[Busca por cidade]
+    Search --> Http[Fetch API ou Axios]
+    Http --> Weather[API externa de clima]
+    Weather --> Http
+    Http --> UI
+```
+
+## Testes Automatizados
+
+Ainda não há testes, framework de testes ou script `test` no `package.json`. Assim, não existe um comando de teste executável nem resultados de aprovação a relatar neste estágio. Antes da entrega do MVP, devem ser adicionados testes unitários e de integração para busca, estados de carregamento, renderização dos dados e erros da API, além de um comando de teste documentado e validado.
+
+## Limitações e Próximos Passos
+
+- Criar o ponto de entrada e os componentes React;
+- Escolher e integrar uma API meteorológica, incluindo o tratamento seguro da chave;
+- Implementar busca, previsão, estados de carregamento e mensagens de erro;
+- Configurar testes automatizados e verificar build e testes em ambiente limpo;
+- Gerar e versionar o lockfile npm para fixar também as dependências transitivas;
+- Revisar acessibilidade e comportamento responsivo;
+- Definir créditos finais e uma licença para o projeto.
+
+## Créditos e Licença
+
+OpenWeatherMap é uma API candidata, ainda não integrada. Os créditos de autoria e a licença do repositório ainda não foram definidos; não reutilize ou redistribua o projeto sob uma licença presumida.
+
+## Releases e Tags
+
+Ainda não há release ou tag publicada. Após implementar o MVP, executar e aprovar os testes e revisar a documentação, recomenda-se criar uma release e uma tag versionada, por exemplo `v1.0.0`.
